@@ -1,0 +1,17 @@
+{
+  "name": "gerber",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "bsb -clean-world -make-world",
+    "watch": "bsb -clean-world -make-world -w",
+    "start": "bsb -make-world -w",
+    "clean": "bsb -clean-world"
+  },
+  "keywords": [
+    "BuckleScript"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "bs-platform": "2.0.0"
+  }
+}
