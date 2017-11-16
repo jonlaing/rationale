@@ -27,9 +27,9 @@ Gerber includes monadic and functor operations ala Haskell for the `option` type
 open Gerber;
 
 Option.(
-  init(a)
-  >>= ((x) => fmap((y) => append(f(y), x), last(a)))
-  |> fmap((x) => concat(b, x))
+  GList.init(a)
+  >>= ((x) => fmap((y) => GList.append(f(y), x), GList.last(a)))
+  |> fmap(GList.concat(b))
   |> default(xs)
 );
 ```

@@ -48,10 +48,7 @@ let adjust = (f, i, xs) => {
   | [a] => [f(a), ...b]
   | a =>
     Option.(
-      init(a)
-      >>= ((x) => fmap((y) => append(f(y), x), last(a)))
-      |> fmap((x) => concat(b, x))
-      |> default(xs)
+      init(a) >>= ((x) => fmap((y) => append(f(y), x), last(a))) |> fmap(concat(b)) |> default(xs)
     )
   }
 };

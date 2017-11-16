@@ -1,3 +1,4 @@
+/* Inspired by: https://github.com/avsm/ocaml-lens */
 type t('a, 'b) = {
   get: 'a => 'b,
   set: ('b, 'a) => 'a
@@ -31,4 +32,31 @@ let optional = (default) => {
     | None => default
     },
   set: (v, _) => Some(v)
+};
+
+let head = {
+  get: GList.head,
+  set: (v, xs) =>
+    switch v {
+    | None => xs
+    | Some(a) => GList.tail(xs) |> Option.default([]) |> GList.append(a)
+    }
+};
+
+let tail = {
+  get: GList.tail,
+  set: (v, xs) =>
+    switch v {
+    | None => xs
+    | Some(a) => Option.(GList.head(xs) |> fmap((xs) => GList.append(xs, a)) |> default(a))
+    }
+};
+
+let index = (i) => {
+  get: GList.nth(i),
+  set: (v, xs) =>
+    switch v {
+    | None => xs
+    | Some(a) => GList.update(a, i, xs)
+    }
 };
