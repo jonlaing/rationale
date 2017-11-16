@@ -17,3 +17,9 @@ let default = (d, o) =>
   | None => d
   | Some(a) => a
   };
+
+let exnToOption = (x) =>
+  switch x {
+  | exception _ => None
+  | a => Some(a)
+  };
