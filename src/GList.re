@@ -12,48 +12,15 @@ let append = (a, xs) => List.append(xs, [a]);
 
 let concat = (xs, ys) => List.append(ys, xs);
 
-let splitAt = (i, xs) => {
-  let rec fNeg = (i, xs, acc) =>
-    if (i == 0) {
-      (xs, acc)
-    } else {
-      switch (init(xs), last(xs)) {
-      | (Some(start), Some(l)) => fNeg(i + 1, start, List.append(acc, [l]))
-      | (_, _) => (xs, acc)
-      }
+let take = (i, xs) => {
+  let rec loop = (i, xs, acc) =>
+    switch (i, xs) {
+    | (i, _) when i <= 0 => acc
+    | (_, []) => acc
+    | (i, [a, ...b]) => loop(i - 1, b, append(a, acc))
     };
-  let rec fPos = (i, xs, acc) =>
-    if (i == 0) {
-      (acc, xs)
-    } else {
-      switch (head(xs), tail(xs)) {
-      | (Some(hd), Some(tl)) => fPos(i - 1, tl, List.append(acc, [hd]))
-      | (_, _) => (acc, xs)
-      }
-    };
-  switch xs {
-  | [] => ([], [])
-  | xs when i < 0 && abs(i) >= List.length(xs) => ([], xs)
-  | xs when i < 0 => fNeg(i, xs, [])
-  | xs when i >= List.length(xs) => (xs, [])
-  | xs => fPos(i, xs, [])
-  }
+  loop(i, xs, [])
 };
-
-let adjust = (f, i, xs) => {
-  let (a, b) = splitAt(i, xs);
-  switch a {
-  | _ when i < 0 => xs
-  | [] => b
-  | [a] => [f(a), ...b]
-  | a =>
-    Option.(
-      init(a) >>= ((x) => fmap((y) => append(f(y), x), last(a))) |> fmap(concat(b)) |> default(xs)
-    )
-  }
-};
-
-let take = (i, xs) => fst(splitAt(i, xs));
 
 let takeLast = (i, xs) => List.rev(xs) |> take(i) |> List.rev;
 
@@ -68,7 +35,12 @@ let takeWhile = (pred, xs) => {
 
 let takeLastWhile = (pred, xs) => List.rev(xs) |> takeWhile(pred) |> List.rev;
 
-let drop = (i, xs) => snd(splitAt(i, xs));
+let rec drop = (i, xs) =>
+  switch (i, xs) {
+  | (_, []) => []
+  | (i, _) when i <= 0 => xs
+  | (i, [_, ...b]) => drop(i - 1, b)
+  };
 
 let dropLast = (i, xs) => take(List.length(xs) - i, xs);
 
@@ -101,13 +73,19 @@ let rec dropWhile = (pred, xs) =>
   | [a, ...b] => pred(a) ? dropWhile(pred, b) : b
   };
 
-let takeWhile = (pred, xs) => {
-  let rec f = (xs, acc) =>
-    switch xs {
-    | [] => acc
-    | [a, ...b] => pred(a) ? f(b, append(a, acc)) : acc
-    };
-  f(xs, [])
+let splitAt = (i, xs) => (take(i, xs), takeLast(i - 1, xs));
+
+let adjust = (f, i, xs) => {
+  let (a, b) = splitAt(i, xs);
+  switch a {
+  | _ when i < 0 => xs
+  | [] => b
+  | [a] => [f(a), ...b]
+  | a =>
+    Option.(
+      init(a) >>= ((x) => fmap((y) => append(f(y), x), last(a))) |> fmap(concat(b)) |> default(xs)
+    )
+  }
 };
 
 let aperature = (i, xs) => {

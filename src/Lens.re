@@ -60,3 +60,9 @@ let index = (i) => {
     | Some(a) => GList.update(a, i, xs)
     }
 };
+
+let listMap = (l) => {get: List.map(l.get), set: List.map2(l.set)};
+
+let first = {get: fst, set: (v, a) => (v, snd(a))};
+
+let second = {get: snd, set: (v, a) => (fst(a), v)};
