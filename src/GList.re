@@ -85,7 +85,9 @@ let adjust = (f, i, xs) => {
   | [] => b
   | [a] => [f(a), ...b]
   | a =>
-    Option.(init(a) >>= ((x) => last(a) >>| ((y) => append(f(y), x))) >>| concat(b) |> default(xs))
+    Option.(
+      init(a) >>= ((x) => last(a) >>| f >>| Function.flip(append, x)) >>| concat(b) |> default(xs)
+    )
   }
 };
 
@@ -104,7 +106,7 @@ let containsWith = (f, x) => List.exists((y) => f(x, y));
 
 let contains = (x) => containsWith(Util.eq, x);
 
-let endsWith = (a, xs) => last(xs) == a;
+let endsWith = (a, xs) => Option.(last(xs) >>| Util.eq(a) |> default(false));
 
 let find = (pred, xs) => Option.ofExn(List.find(pred, xs));
 
@@ -208,7 +210,13 @@ let repeat = {
   (a, n) => loop(a, n, [])
 };
 
-let scan = (f, i) => List.fold_left((acc, v) => append(f(last(acc), v), acc), [i]);
+let scan = (f: ('a, 'b) => 'a, i: 'a) =>
+  Option.(
+    List.fold_left(
+      (acc, v) => last(acc) >>| Function.flip(f, v) >>| Function.flip(append, acc) |> default([]),
+      [i]
+    )
+  );
 
 let slice = (a, b, xs) => xs |> splitAt(a) |> snd |> splitAt(b) |> fst;
 

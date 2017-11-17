@@ -19,17 +19,17 @@ In the OCaml/ReasonML standard library, many of the common List operations throw
 - nth
 - etc
 
-### Monadic Options
+### Monadic Options and Js.Results
 
-Gerber includes monadic and functor operations ala Haskell for the `option` type.
+Gerber includes monadic and functor operations ala Haskell for the `option` and `Js.Result` types.
 
 ```Reason
 open Gerber;
 
 Option.(
   GList.init(a)
-  >>= ((x) => fmap((y) => GList.append(f(y), x), GList.last(a)))
-  |> fmap(GList.concat(b))
+  >>= ((x) => GList.last(a) >>| ((y) => GList.append(f(y), x)))
+  >>| GList.concat(b)
   |> default(xs)
 );
 ```
@@ -44,4 +44,16 @@ Gerber also allows for fluid lens composition via infix operators: `-<<` and `>>
 
 ```Reason
 Lens.view(aLens >>- bLens >>- optional([]), { a: { b: Some(3) } });
+
+```
+
+### Function signatures for composition
+
+Like in Ramda, functions always keep their data at the end making piping and composing a breeze:
+
+```Reason
+list
+  |> take(9)
+  |> drop(3)
+  |> splitAt(4);
 ```

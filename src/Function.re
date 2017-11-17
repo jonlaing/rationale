@@ -12,6 +12,6 @@ let false_ = (x) => always(false, x);
 
 let true_ = (x) => always(true, x);
 
-let flip = (a, b, f) => f(b, a);
+let flip = (f, a, b) => f(b, a);
 
 let identity = (x) => x;
