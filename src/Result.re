@@ -38,22 +38,6 @@ let ofExn = (e) =>
   | a => Ok(a)
   };
 
-let fmap = (f, r) =>
-  switch r {
-  | Ok(a) => Ok(f(a))
-  | Error(err) => Error(err)
-  };
-
-let bind = (r, f) =>
-  switch r {
-  | Ok(a) => f(a)
-  | Error(err) => Error(err)
-  };
-
-let (>>=) = bind;
-
-let return = (a) => Ok(a);
-
 let ap = (r, a) =>
   switch r {
   | Ok(f) => Ok(f(a))
@@ -71,3 +55,17 @@ let bimap = (okF, errF, r) =>
   | Ok(a) => Ok(okF(a))
   | Error(err) => Error(errF(err))
   };
+
+include
+  Monad.MakeBasic2(
+    {
+      type t('a, 'd) = Js.Result.t('a, 'd);
+      let bind = (r, f) =>
+        switch r {
+        | Ok(a) => f(a)
+        | Error(err) => Error(err)
+        };
+      let return = (a) => Ok(a);
+      let fmap = `DefineWithBind;
+    }
+  );

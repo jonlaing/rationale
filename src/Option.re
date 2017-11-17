@@ -14,22 +14,6 @@ let isSome = (o) =>
   | _ => false
   };
 
-let fmap = (f, o) =>
-  switch o {
-  | None => None
-  | Some(a) => Some(f(a))
-  };
-
-let bind = (o, f) =>
-  switch o {
-  | None => None
-  | Some(a) => f(a)
-  };
-
-let (>>=) = bind;
-
-let return = some;
-
 let ap = (o, a) =>
   switch o {
   | Some(f) => Some(f(a))
@@ -61,3 +45,17 @@ let firstSome = (a, b) =>
   | None => b
   | _ => a
   };
+
+include
+  Monad.MakeBasic(
+    {
+      type t('a) = option('a);
+      let bind = (o, f) =>
+        switch o {
+        | None => None
+        | Some(a) => f(a)
+        };
+      let return = some;
+      let fmap = `DefineWithBind;
+    }
+  );
