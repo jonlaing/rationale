@@ -1,8 +1,8 @@
-let head = (xs) => Option.exnToOption(List.hd(xs));
+let head = (xs) => Option.ofExn(List.hd(xs));
 
-let tail = (xs) => Option.exnToOption(List.tl(xs));
+let tail = (xs) => Option.ofExn(List.tl(xs));
 
-let nth = (i, xs) => Option.exnToOption(List.nth(xs, i));
+let nth = (i, xs) => Option.ofExn(List.nth(xs, i));
 
 let init = (xs) => xs |> List.rev |> tail |> Option.fmap(List.rev);
 
@@ -105,7 +105,7 @@ let contains = (x) => containsWith(Util.eq, x);
 
 let endsWith = (a, xs) => last(xs) == a;
 
-let find = (pred, xs) => Option.exnToOption(List.find(pred, xs));
+let find = (pred, xs) => Option.ofExn(List.find(pred, xs));
 
 let findIndex = (pred, xs) => {
   let rec f = (pred, xs, i) =>
@@ -289,6 +289,16 @@ let intersection = (xs, ys) => {
     switch xs {
     | [] => acc
     | [a, ...b] => contains(a, ys) ? loop(b, ys, append(a, acc)) : loop(b, ys, acc)
+    };
+  loop(xs, ys, [])
+};
+
+let zip = (xs, ys) => {
+  let rec loop = (xs, ys, acc) =>
+    switch (xs, ys) {
+    | ([], _)
+    | (_, []) => acc
+    | ([a, ...b], [c, ...d]) => loop(b, d, append((a, c), acc))
     };
   loop(xs, ys, [])
 };
