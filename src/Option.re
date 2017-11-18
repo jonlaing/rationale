@@ -14,12 +14,6 @@ let isSome = (o) =>
   | _ => false
   };
 
-let ap = (o, a) =>
-  switch o {
-  | Some(f) => Some(f(a))
-  | _ => None
-  };
-
 let default = (d, o) =>
   switch o {
   | None => d
@@ -38,6 +32,12 @@ let ofExn = (x) =>
   switch x {
   | exception _ => None
   | a => Some(a)
+  };
+
+let toExn = (o) =>
+  switch o {
+  | None => raise(Not_found)
+  | Some(a) => a
   };
 
 let firstSome = (a, b) =>
@@ -59,3 +59,11 @@ include
       let fmap = `DefineWithBind;
     }
   );
+
+let ap = (o, a) =>
+  switch o {
+  | Some(f) => fmap(f, a)
+  | _ => None
+  };
+
+let (<**>) = ap;
