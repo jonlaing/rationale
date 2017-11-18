@@ -1,4 +1,4 @@
-/** GList */
+/** RList */
 /** Get the first element of a list */
 let head: list('a) => option('a);
 

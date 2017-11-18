@@ -1,5 +1,5 @@
 {
-  "name": "gerber",
+  "name": "rationale",
   "version": "0.1.0",
   "scripts": {
     "build": "bsb -clean-world -make-world",

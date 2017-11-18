@@ -6,15 +6,15 @@ type t('a) = list((string, 'a));
 
 let findEntry = (k) => fst ||> Util.eq(k);
 
-let get = (k, d) => GList.find(findEntry(k), d) <$> snd;
+let get = (k, d) => RList.find(findEntry(k), d) <$> snd;
 
 let set = (k, v, d) =>
-  switch (GList.findIndex(findEntry(k), d)) {
-  | None => GList.append((k, v), d)
-  | Some(i) => GList.update((k, v), i, d)
+  switch (RList.findIndex(findEntry(k), d)) {
+  | None => RList.append((k, v), d)
+  | Some(i) => RList.update((k, v), i, d)
   };
 
-let unset = (k, d) => GList.reject(findEntry(k), d);
+let unset = (k, d) => RList.reject(findEntry(k), d);
 
 let eqProps = (k, d0: t('a), d1: t('a)) =>
   Option.(Some(Util.eq) <*> get(k, d0) <*> get(k, d1) |> default(false));
@@ -37,7 +37,7 @@ let has = (k, d) => get(k, d) <$> Function.true_ |> Option.default(false);
 
 let invert = (d) =>
   List.fold_left(
-    (acc, (k, v)) => set(k, get(k, acc) <$> GList.append(v) |> Option.default([v]), acc),
+    (acc, (k, v)) => set(k, get(k, acc) <$> RList.append(v) |> Option.default([v]), acc),
     [],
     d
   );
@@ -47,17 +47,17 @@ let keys = (d) => List.map(fst, d);
 let merge = (d0, d1) => List.fold_left((acc, (k, v)) => set(k, v, acc), d0, d1);
 
 let mergeWithKey = (f, d0, d1) => {
-  let intersect = GList.intersection(keys(d0), keys(d1));
+  let intersect = RList.intersection(keys(d0), keys(d1));
   List.map((k) => Option.(k, Some(f(k)) <*> get(k, d0) <*> get(k, d1) |> toExn), intersect)
 };
 
 let mergeWith = (f, d0, d1) => mergeWithKey(Function.always(f), d0, d1);
 
-let omit = (ks, d) => GList.reject(((k, _)) => GList.contains(k, ks), d);
+let omit = (ks, d) => RList.reject(((k, _)) => RList.contains(k, ks), d);
 
 let pickBy = (pred, d) => List.filter(((k, v)) => pred(k, v), d);
 
-let pick = (ks) => pickBy((k, _) => GList.contains(k, ks));
+let pick = (ks) => pickBy((k, _) => RList.contains(k, ks));
 
 let project = (ks, ds) => List.map(pick(ks), ds);
 

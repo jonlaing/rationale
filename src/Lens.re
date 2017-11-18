@@ -35,29 +35,29 @@ let optional = (default) => {
 };
 
 let head = {
-  get: GList.head,
+  get: RList.head,
   set: (v, xs) =>
     switch v {
     | None => xs
-    | Some(a) => GList.tail(xs) |> Option.default([]) |> GList.append(a)
+    | Some(a) => RList.tail(xs) |> Option.default([]) |> RList.append(a)
     }
 };
 
 let tail = {
-  get: GList.tail,
+  get: RList.tail,
   set: (v, xs) =>
     switch v {
     | None => xs
-    | Some(a) => Option.(GList.head(xs) |> fmap((xs) => GList.append(xs, a)) |> default(a))
+    | Some(a) => Option.(RList.head(xs) |> fmap((xs) => RList.append(xs, a)) |> default(a))
     }
 };
 
 let index = (i) => {
-  get: GList.nth(i),
+  get: RList.nth(i),
   set: (v, xs) =>
     switch v {
     | None => xs
-    | Some(a) => GList.update(a, i, xs)
+    | Some(a) => RList.update(a, i, xs)
     }
 };
 

@@ -1,4 +1,4 @@
-Gerber
+Rationale
 ================================================================================
 
 Named after the well-known multi-tool brand, Gerber is inspired by [RamdaJS](http://ramdajs.com/). It is a collection of helper utility functions that are absent in the OCaml/ReasonML standard library.
@@ -27,9 +27,9 @@ Gerber includes monadic and functor operations ala Haskell for the `option` and 
 open Gerber.Option.Infix;
 open Gerber.Function;
 
-GList.init(a)
-  >>= ((x) => GList.last(a) <$> f <$> flip(GList.append, x))
-  <$> GList.concat(b)
+RList.init(a)
+  >>= ((x) => RList.last(a) <$> f <$> flip(RList.append, x))
+  <$> RList.concat(b)
   |> Option.default(xs);
 ```
 
@@ -60,7 +60,7 @@ list
 Usage
 --------------------------------------------------------------------------------
 
-### Using Optional Returns in GList and Dict
+### Using Optional Returns in RList and Dict
 
 Returning `option('a)` from functions is generally preferred to throwing an exception.
 It protects you from runtime errors, and forces you to deal with potential errors at
@@ -93,7 +93,7 @@ approach to working with them.
 First, let's check if the last item of a list is equal to a certain value:
 
 ```Reason
-let lastEquals = (a, xs) => Option.fmap(Util.eq(a), GList.last(xs)) |> Option.default(false);
+let lastEquals = (a, xs) => Option.fmap(Util.eq(a), RList.last(xs)) |> Option.default(false);
 
 lastEquals(3, [1,2,3]); /* true */
 lastEquals(3, [4,5,6]); /* false */
@@ -102,7 +102,7 @@ lastEquals(3, []); /* false */
 /* Or, with infix operators */
 open Option.Infix;
 
-let lastEquals = (a, xs) => GList.last(xs) <$> Util.eq(a) |> Option.default(false);
+let lastEquals = (a, xs) => RList.last(xs) <$> Util.eq(a) |> Option.default(false);
 ```
 
 Here we used `fmap` and its infix variation `<$>` to apply a function to the value *inside* the option.
@@ -115,7 +115,7 @@ Now let's replace the last item of one list with the last item of another. Note 
 
 ```Reason
 let swapLast = (xs, ys) =>
-  Option.(bind(Glist.last(xs), ((x) => fmap(GList.append(x), GList.init(ys)))) |> default(ys));
+  Option.(bind(RList.last(xs), ((x) => fmap(RList.append(x), RList.init(ys)))) |> default(ys));
 
 swapLast([1,2,3], [4,5,6]); /* [4,5,3] */
 swapLast([], [4,5,6]); /* [4,5,6] */
@@ -125,7 +125,7 @@ open Option.Infix;
 open Option.Infix;
 
 let swapLast = (xs, ys) =>
-  Glist.last(xs) >>= ((x) => GList.init(ys) <$> GList.append(x)) |> Option.default(ys);
+  RList.last(xs) >>= ((x) => RList.init(ys) <$> RList.append(x)) |> Option.default(ys);
 ```
 
 Here we used `bind` and its infix variation `>>=` to apply a function that also returned an `option`.
@@ -137,7 +137,7 @@ but that can be a little awkward.
 
 ```Reason
 let lastEqual = (xs, ys) =>
-  Option.(apply(apply(Some(Util.eq), GList.last(xs), GList.last(ys))) |> default(false));
+  Option.(apply(apply(Some(Util.eq), RList.last(xs), RList.last(ys))) |> default(false));
 
 lastEqual([1,2,3], [4,5,3]); /* true */
 lastEqual([1,2,3], [4,5,6]); /* false */
@@ -146,7 +146,7 @@ lastEqual([1,2,3], []); /* false */
 
 /* Or, with infix operators */
 let lastEqual = (xs, ys) =>
-  Some(Util.eq) <*> GList.last(xs) <*> GList.last(ys) |> Option.default(false);
+  Some(Util.eq) <*> RList.last(xs) <*> RList.last(ys) |> Option.default(false);
 ```
 
 Reference
