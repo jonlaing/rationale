@@ -8,7 +8,11 @@
     "clean": "bsb -clean-world"
   },
   "keywords": [
-    "BuckleScript"
+    "BuckleScript",
+    "ReasonML",
+    "Ramda",
+    "Lodash",
+    "Monad"
   ],
   "license": "MIT",
   "devDependencies": {
