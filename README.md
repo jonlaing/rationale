@@ -1,7 +1,7 @@
 Rationale
 ================================================================================
 
-Named after the well-known multi-tool brand, Gerber is inspired by [RamdaJS](http://ramdajs.com/). It is a collection of helper utility functions that are absent in the OCaml/ReasonML standard library.
+Rationale is inspired by [RamdaJS](http://ramdajs.com/). It is a collection of helper utility functions that are absent in the OCaml/ReasonML standard library.
 
 Note that not all of Ramda was ported over, as many of Ramda's utilities are making up for deficits in Javascript, which Reason doesn't have. Furthermore, many of the functions that operate on objects, simply don't make sense in Reason.
 
@@ -10,7 +10,7 @@ Features
 
 ### Exception-free List oprations
 
-In the OCaml/ReasonML standard library, many of the common List operations throw exceptions if there's a problem. Gerber's utilities do not throw exceptions, and instead return `options`.
+In the OCaml/ReasonML standard library, many of the common List operations throw exceptions if there's a problem. Rationale's utilities do not throw exceptions, and instead return `options`.
 
 - head
 - tail
@@ -21,11 +21,11 @@ In the OCaml/ReasonML standard library, many of the common List operations throw
 
 ### Monadic Options and Js.Results
 
-Gerber includes monadic and functor operations ala Haskell for the `option` and `Js.Result` types.
+Rationale includes monadic and functor operations ala Haskell for the `option` and `Js.Result` types.
 
 ```Reason
-open Gerber.Option.Infix;
-open Gerber.Function;
+open Rationale.Option.Infix;
+open Rationale.Function;
 
 RList.init(a)
   >>= ((x) => RList.last(a) <$> f <$> flip(RList.append, x))
@@ -35,11 +35,11 @@ RList.init(a)
 
 ### Support for Point-free style
 
-Gerber has `compose` and `pipe` functions, as well as supporting infix operators: `<||` and `||>` respectively.
+Rationale has `compose` and `pipe` functions, as well as supporting infix operators: `<||` and `||>` respectively.
 
 ### Infix Lens composition
 
-Gerber also allows for fluid lens composition via infix operators: `-<<` and `>>-`.
+Rationale also allows for fluid lens composition via infix operators: `-<<` and `>>-`.
 
 ```Reason
 Lens.view(aLens >>- bLens >>- optional(0), { a: { b: Some(3) } });
