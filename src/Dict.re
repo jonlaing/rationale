@@ -2,13 +2,11 @@ open Option.Infix;
 
 open Function.Infix;
 
-type entry('a) = (string, 'a);
-
-type t('a) = list(entry('a));
+type t('a) = list((string, 'a));
 
 let findEntry = (k) => fst ||> Util.eq(k);
 
-let get = (k, d) => GList.find(findEntry(k), d) >>| snd;
+let get = (k, d) => GList.find(findEntry(k), d) <$> snd;
 
 let set = (k, v, d) =>
   switch (GList.findIndex(findEntry(k), d)) {
@@ -19,7 +17,7 @@ let set = (k, v, d) =>
 let unset = (k, d) => GList.reject(findEntry(k), d);
 
 let eqProps = (k, d0: t('a), d1: t('a)) =>
-  Option.(Some(Util.eq) <**> get(k, d0) <**> get(k, d1) |> default(false));
+  Option.(Some(Util.eq) <*> get(k, d0) <*> get(k, d1) |> default(false));
 
 let map = (f) => List.map(((k, v)) => (k, f(v)));
 
@@ -35,11 +33,11 @@ let evolve = (e, d) =>
     d
   );
 
-let has = (k, d) => get(k, d) >>| Function.true_ |> Option.default(false);
+let has = (k, d) => get(k, d) <$> Function.true_ |> Option.default(false);
 
 let invert = (d) =>
   List.fold_left(
-    (acc, (k, v)) => set(k, get(k, acc) >>| GList.append(v) |> Option.default([v]), acc),
+    (acc, (k, v)) => set(k, get(k, acc) <$> GList.append(v) |> Option.default([v]), acc),
     [],
     d
   );
@@ -50,7 +48,7 @@ let merge = (d0, d1) => List.fold_left((acc, (k, v)) => set(k, v, acc), d0, d1);
 
 let mergeWithKey = (f, d0, d1) => {
   let intersect = GList.intersection(keys(d0), keys(d1));
-  List.map((k) => Option.(k, Some(f(k)) <**> get(k, d0) <**> get(k, d1) |> toExn), intersect)
+  List.map((k) => Option.(k, Some(f(k)) <*> get(k, d0) <*> get(k, d1) |> toExn), intersect)
 };
 
 let mergeWith = (f, d0, d1) => mergeWithKey(Function.always(f), d0, d1);
@@ -67,7 +65,7 @@ let values = (d) => List.map(snd, d);
 
 let where = (predD, d) =>
   List.fold_left(
-    (acc, (k, f)) => acc ? Option.(Some(f) <**> get(k, d) |> default(false)) : false,
+    (acc, (k, f)) => acc ? Option.(Some(f) <*> get(k, d) |> default(false)) : false,
     true,
     predD
   );

@@ -1,6 +1,4 @@
-type entry('a) = (string, 'a);
-
-type t('a) = list(entry('a));
+type t('a) = list((string, 'a));
 
 let get: (string, t('a)) => option('a);
 

@@ -29,8 +29,8 @@ open Gerber.GList;
 open Gerber.Function;
 
 init(a)
-  >>= ((x) => last(a) >>| f >>| flip(append, x))
-  >>| concat(b)
+  >>= ((x) => last(a) <$> f <$> flip(append, x))
+  <$> concat(b)
   |> default(xs);
 ```
 
@@ -64,8 +64,8 @@ Reference
 ### Infix Operators
 
 - `>>=`: Monadic Bind
-- `>>|`: Functor Fmap
-- `<**>`: Applicative Ap
+- `<$>`: Functor Fmap
+- `<*>`: Applicative Ap
 - `<||`: Point-free Function Compose
 - `||>`: Point-free Function Pipe
 - `-<<`: Lens Compose

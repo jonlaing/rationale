@@ -69,3 +69,8 @@ include
       let fmap = `DefineWithBind;
     }
   );
+
+module Infix = {
+  let (>>=) = (>>=);
+  let (<$>) = (<$>);
+};

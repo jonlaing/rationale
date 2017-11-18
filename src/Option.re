@@ -60,10 +60,21 @@ include
     }
   );
 
-let ap = (o, a) =>
-  switch o {
-  | Some(f) => fmap(f, a)
-  | _ => None
-  };
+include
+  Applicative.MakeBasic(
+    {
+      type t('a) = option('a);
+      let apply = (o, a) =>
+        switch o {
+        | Some(f) => bind(a, (b) => return(f(b)))
+        | _ => None
+        };
+      let pure = some;
+    }
+  );
 
-let (<**>) = ap;
+module Infix = {
+  let (>>=) = (>>=);
+  let (<$>) = (<$>);
+  let (<*>) = (<*>);
+};

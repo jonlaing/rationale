@@ -4,7 +4,7 @@ let tail = (xs) => Option.ofExn(List.tl(xs));
 
 let nth = (i, xs) => Option.ofExn(List.nth(xs, i));
 
-let init = (xs) => Option.(xs |> List.rev |> tail >>| List.rev);
+let init = (xs) => Option.(xs |> List.rev |> tail <$> List.rev);
 
 let last = (xs) => xs |> List.rev |> head;
 
@@ -61,7 +61,7 @@ let dropRepeatsWith = {
     | [a, ..._] when List.length(acc) == 0 => loop(pred, xs, append(a, acc))
     | [a, ..._] =>
       Option.(
-        last(acc) >>| pred(a) |> default(false) ?
+        last(acc) <$> pred(a) |> default(false) ?
           loop(pred, xs, append(a, acc)) : loop(pred, xs, acc)
       )
     };
@@ -86,7 +86,7 @@ let adjust = (f, i, xs) => {
   | [a] => [f(a), ...b]
   | a =>
     Option.(
-      init(a) >>= ((x) => last(a) >>| f >>| Function.flip(append, x)) >>| concat(b) |> default(xs)
+      init(a) >>= ((x) => last(a) <$> f <$> Function.flip(append, x)) <$> concat(b) |> default(xs)
     )
   }
 };
@@ -106,7 +106,7 @@ let containsWith = (f, x) => List.exists((y) => f(x, y));
 
 let contains = (x) => containsWith(Util.eq, x);
 
-let endsWith = (a, xs) => Option.(last(xs) >>| Util.eq(a) |> default(false));
+let endsWith = (a, xs) => Option.(last(xs) <$> Util.eq(a) |> default(false));
 
 let find = (pred, xs) => Option.ofExn(List.find(pred, xs));
 
@@ -213,7 +213,7 @@ let repeat = {
 let scan = (f: ('a, 'b) => 'a, i: 'a) =>
   Option.(
     List.fold_left(
-      (acc, v) => last(acc) >>| Function.flip(f, v) >>| Function.flip(append, acc) |> default([]),
+      (acc, v) => last(acc) <$> Function.flip(f, v) <$> Function.flip(append, acc) |> default([]),
       [i]
     )
   );
@@ -253,7 +253,7 @@ let times = {
 
 let uniqWithBy = (eq, f, xs) =>
   List.fold_left(
-    (acc, v) => Option.(last(acc) >>| f >>| eq(f(v)) |> default(false) ? acc : append(v, acc)),
+    (acc, v) => Option.(last(acc) <$> f <$> eq(f(v)) |> default(false) ? acc : append(v, acc)),
     [],
     xs
   );

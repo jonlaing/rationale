@@ -61,6 +61,15 @@ let index = (i) => {
     }
 };
 
+let prop = (k) => {
+  get: Dict.get(k),
+  set: (v, d) =>
+    switch v {
+    | None => d
+    | Some(a) => Dict.set(k, a, d)
+    }
+};
+
 let listMap = (l) => {get: List.map(l.get), set: List.map2(l.set)};
 
 let first = {get: fst, set: (v, a) => (v, snd(a))};

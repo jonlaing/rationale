@@ -18,7 +18,7 @@ module type Basic = {
 module type Infix = {
   type t('a);
   let (>>=): (t('a), 'a => t('b)) => t('b);
-  let (>>|): (t('a), 'a => 'b) => t('b);
+  let (<$>): (t('a), 'a => 'b) => t('b);
 };
 
 module type Basic2 = {
@@ -31,7 +31,7 @@ module type Basic2 = {
 module type Infix2 = {
   type t('a, 'e);
   let (>>=): (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e);
-  let (>>|): (t('a, 'e), 'a => 'b) => t('b, 'e);
+  let (<$>): (t('a, 'e), 'a => 'b) => t('b, 'e);
 };
 
 module MakeGeneral = (M: General) => {
@@ -42,11 +42,8 @@ module MakeGeneral = (M: General) => {
     | `DefineWithBind => ((f, m) => M.bind(m, (a) => M.return(f(a))))
     | `Custom(f) => f
     };
-  module Infix = {
-    let (>>=) = M.bind;
-    let (>>|) = (m, f) => fmap(f, m);
-  };
-  include Infix;
+  let (>>=) = M.bind;
+  let (<$>) = (m, f) => fmap(f, m);
   let join = (m) => m >>= ((a) => a);
   let all = {
     let rec loop = (vs, ms) =>
