@@ -68,3 +68,5 @@ Reference
 - `<**>`: Applicative Ap
 - `<||`: Point-free Function Compose
 - `||>`: Point-free Function Pipe
+- `-<<`: Lens Compose
+- `>>-`: Lens Pipe

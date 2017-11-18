@@ -310,3 +310,5 @@ let zip = {
     };
   (xs, ys) => loop(xs, ys, [])
 };
+
+let pure = (a) => [a];

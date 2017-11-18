@@ -135,3 +135,5 @@ let difference: (list('a), list('a)) => list('a);
 let intersection: (list('a), list('a)) => list('a);
 
 let zip: (list('a), list('b)) => list(('a, 'b));
+
+let pure: 'a => list('a);

@@ -1,0 +1,75 @@
+open Option.Infix;
+
+open Function.Infix;
+
+type entry('a) = (string, 'a);
+
+type t('a) = list(entry('a));
+
+let findEntry = (k) => fst ||> Util.eq(k);
+
+let get = (k, d) => GList.find(findEntry(k), d) >>| snd;
+
+let set = (k, v, d) =>
+  switch (GList.findIndex(findEntry(k), d)) {
+  | None => GList.append((k, v), d)
+  | Some(i) => GList.update((k, v), i, d)
+  };
+
+let unset = (k, d) => GList.reject(findEntry(k), d);
+
+let eqProps = (k, d0: t('a), d1: t('a)) =>
+  Option.(Some(Util.eq) <**> get(k, d0) <**> get(k, d1) |> default(false));
+
+let map = (f) => List.map(((k, v)) => (k, f(v)));
+
+let mapi = (f, d) => List.map(((k, v)) => (k, f(k, v)), d);
+
+let evolve = (e, d) =>
+  mapi(
+    (k, v) =>
+      switch (get(k, e)) {
+      | None => v
+      | Some(f) => f(v)
+      },
+    d
+  );
+
+let has = (k, d) => get(k, d) >>| Function.true_ |> Option.default(false);
+
+let invert = (d) =>
+  List.fold_left(
+    (acc, (k, v)) => set(k, get(k, acc) >>| GList.append(v) |> Option.default([v]), acc),
+    [],
+    d
+  );
+
+let keys = (d) => List.map(fst, d);
+
+let merge = (d0, d1) => List.fold_left((acc, (k, v)) => set(k, v, acc), d0, d1);
+
+let mergeWithKey = (f, d0, d1) => {
+  let intersect = GList.intersection(keys(d0), keys(d1));
+  List.map((k) => Option.(k, Some(f(k)) <**> get(k, d0) <**> get(k, d1) |> toExn), intersect)
+};
+
+let mergeWith = (f, d0, d1) => mergeWithKey(Function.always(f), d0, d1);
+
+let omit = (ks, d) => GList.reject(((k, _)) => GList.contains(k, ks), d);
+
+let pickBy = (pred, d) => List.filter(((k, v)) => pred(k, v), d);
+
+let pick = (ks) => pickBy((k, _) => GList.contains(k, ks));
+
+let project = (ks, ds) => List.map(pick(ks), ds);
+
+let values = (d) => List.map(snd, d);
+
+let where = (predD, d) =>
+  List.fold_left(
+    (acc, (k, f)) => acc ? Option.(Some(f) <**> get(k, d) |> default(false)) : false,
+    true,
+    predD
+  );
+
+let whereEq = (d0, d1) => map(Util.eq, d0) |> Function.flip(where, d1);
