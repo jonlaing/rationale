@@ -149,6 +149,27 @@ let lastEqual = (xs, ys) =>
   Some(Util.eq) <*> RList.last(xs) <*> RList.last(ys) |> Option.default(false);
 ```
 
+### Translating JS Idioms
+
+### Or chains
+
+Take the following example in Javascript:
+
+```Javascript
+let x = a || b || c || d;
+```
+
+We can't translate that directly to Reason, because there is no `null` or `undefined` in Reason.
+The closest approximation would be `option`, in which we can string together `Some` and `None`
+to get the first one that is `Some`.
+
+There is a helper function called `firstSome` and its infix variation `|?` that do exactly this.
+
+```Reason
+/* a, b, and c are all options, but d is not */
+let x = a |? b |? c |> default(d);
+```
+
 Reference
 --------------------------------------------------------------------------------
 
@@ -161,3 +182,4 @@ Reference
 - `||>`: Point-free Function Pipe
 - `-<<`: Lens Compose
 - `>>-`: Lens Pipe
+- `|?`: Optional Or

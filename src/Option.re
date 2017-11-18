@@ -77,4 +77,5 @@ module Infix = {
   let (>>=) = (>>=);
   let (<$>) = (<$>);
   let (<*>) = (<*>);
+  let (|?) = firstSome;
 };
