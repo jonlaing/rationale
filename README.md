@@ -24,14 +24,14 @@ In the OCaml/ReasonML standard library, many of the common List operations throw
 Gerber includes monadic and functor operations ala Haskell for the `option` and `Js.Result` types.
 
 ```Reason
-open Gerber;
+open Gerber.Option;
+open Gerber.GList;
+open Gerber.Function;
 
-Option.(
-  GList.init(a)
-  >>= ((x) => GList.last(a) >>| ((y) => GList.append(f(y), x)))
-  >>| GList.concat(b)
-  |> default(xs)
-);
+init(a)
+  >>= ((x) => last(a) >>| f >>| flip(append, x))
+  >>| concat(b)
+  |> default(xs);
 ```
 
 ### Support for Point-free style
@@ -43,7 +43,7 @@ Gerber has `compose` and `pipe` functions, as well as supporting infix operators
 Gerber also allows for fluid lens composition via infix operators: `-<<` and `>>-`.
 
 ```Reason
-Lens.view(aLens >>- bLens >>- optional([]), { a: { b: Some(3) } });
+Lens.view(aLens >>- bLens >>- optional(0), { a: { b: Some(3) } });
 
 ```
 
@@ -57,3 +57,14 @@ list
   |> drop(3)
   |> splitAt(4);
 ```
+
+Reference
+--------------------------------------------------------------------------------
+
+### Infix Operators
+
+- `>>=`: Monadic Bind
+- `>>|`: Functor Fmap
+- `<**>`: Applicative Ap
+- `<||`: Point-free Function Compose
+- `||>`: Point-free Function Pipe
