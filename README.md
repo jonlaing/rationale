@@ -24,14 +24,13 @@ In the OCaml/ReasonML standard library, many of the common List operations throw
 Gerber includes monadic and functor operations ala Haskell for the `option` and `Js.Result` types.
 
 ```Reason
-open Gerber.Option;
-open Gerber.GList;
+open Gerber.Option.Infix;
 open Gerber.Function;
 
-init(a)
-  >>= ((x) => last(a) >>| f >>| flip(append, x))
-  >>| concat(b)
-  |> default(xs);
+GList.init(a)
+  >>= ((x) => GList.last(a) <$> f <$> flip(GList.append, x))
+  <$> GList.concat(b)
+  |> Option.default(xs);
 ```
 
 ### Support for Point-free style
@@ -61,7 +60,7 @@ list
 Usage
 --------------------------------------------------------------------------------
 
-## Using Optional Returns in GList and Dict
+### Using Optional Returns in GList and Dict
 
 Returning `option('a)` from functions is generally preferred to throwing an exception.
 It protects you from runtime errors, and forces you to deal with potential errors at
@@ -73,7 +72,7 @@ we provide a host of useful methods to working with optional returns. Hopefully,
 this doc will show you that you don't need to use excessive pattern matching to
 work with optional returns.
 
-### Default
+#### Default
 
 The most straight forward way to get out of an `option` is by calling `default`.
 
@@ -83,7 +82,7 @@ Option.default(0, Some(1)); /* 1 */
 Option.default(0, None); /* 0 */
 ```
 
-### Monads
+#### Monads
 
 Calling `default` will definitely get you out of the `option`, but what if you want
 to do some things to it first? What if you need other funtions that also return `option`?
@@ -131,7 +130,7 @@ let swapLast = (xs, ys) =>
 
 Here we used `bind` and its infix variation `>>=` to apply a function that also returned an `option`.
 
-### Applicatives
+#### Applicatives
 
 Let's try checking if the last elements of two lists are equal. We could accomplish this using `bind`,
 but that can be a little awkward.
@@ -156,8 +155,8 @@ Reference
 ### Infix Operators
 
 - `>>=`: Monadic Bind
-- `>>|`: Functor Fmap
-- `<**>`: Applicative Ap
+- `<$>`: Functor Fmap
+- `<*>`: Applicative Ap
 - `<||`: Point-free Function Compose
 - `||>`: Point-free Function Pipe
 - `-<<`: Lens Compose
