@@ -2,6 +2,10 @@
   "name": "rationale",
   "version": "0.1.1",
   "description": "Rationale is a collection of helper utility functions that are absent in the OCaml/ReasonML standard library.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonlaing/rationale"
+  },
   "scripts": {
     "build": "bsb -clean-world -make-world",
     "watch": "bsb -clean-world -make-world -w",
