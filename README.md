@@ -8,7 +8,7 @@ Note that not all of Ramda was ported over, as many of Ramda's utilities are mak
 Features
 --------------------------------------------------------------------------------
 
-### Exception-free List oprations
+### Exception-free List operations
 
 In the OCaml/ReasonML standard library, many of the common List operations throw exceptions if there's a problem. Rationale's utilities do not throw exceptions, and instead return `options`.
 
@@ -122,7 +122,6 @@ swapLast([], [4,5,6]); /* [4,5,6] */
 
 /* Or, with infix operators */
 open Option.Infix;
-open Option.Infix;
 
 let swapLast = (xs, ys) =>
   RList.last(xs) >>= ((x) => RList.init(ys) <$> RList.append(x)) |> Option.default(ys);
@@ -145,13 +144,15 @@ lastEqual([], [4,5,6]); /* false */
 lastEqual([1,2,3], []); /* false */
 
 /* Or, with infix operators */
+open Option.Infix;
+
 let lastEqual = (xs, ys) =>
   Some(Util.eq) <*> RList.last(xs) <*> RList.last(ys) |> Option.default(false);
 ```
 
 ### Translating JS Idioms
 
-### Or chains
+#### Or chains
 
 Take the following example in Javascript:
 
@@ -177,7 +178,7 @@ Reference
 
 - `>>=`: Monadic Bind
 - `<$>`: Functor Fmap
-- `<*>`: Applicative Ap
+- `<*>`: Applicative Apply
 - `<||`: Point-free Function Compose
 - `||>`: Point-free Function Pipe
 - `-<<`: Lens Compose
