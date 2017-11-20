@@ -28,15 +28,9 @@ let ofResult = (r) =>
     }
   );
 
-let ofExn = (x) =>
-  switch x {
-  | exception _ => None
-  | a => Some(a)
-  };
-
-let toExn = (o) =>
+let toExn = (err, o) =>
   switch o {
-  | None => raise(Not_found)
+  | None => raise(Failure(err))
   | Some(a) => a
   };
 

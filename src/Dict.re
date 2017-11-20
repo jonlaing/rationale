@@ -48,7 +48,10 @@ let merge = (d0, d1) => List.fold_left((acc, (k, v)) => set(k, v, acc), d0, d1);
 
 let mergeWithKey = (f, d0, d1) => {
   let intersect = RList.intersection(keys(d0), keys(d1));
-  List.map((k) => Option.(k, Some(f(k)) <*> get(k, d0) <*> get(k, d1) |> toExn), intersect)
+  List.map(
+    (k) => Option.(k, Some(f(k)) <*> get(k, d0) <*> get(k, d1) |> toExn("Error merging Dicts")),
+    intersect
+  )
 };
 
 let mergeWith = (f, d0, d1) => mergeWithKey(Function.always(f), d0, d1);
