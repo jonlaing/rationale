@@ -10,7 +10,9 @@
     "build": "bsb -clean-world -make-world",
     "watch": "bsb -clean-world -make-world -w",
     "start": "bsb -make-world -w",
-    "clean": "bsb -clean-world"
+    "clean": "bsb -clean-world",
+    "test": "yarn build && jest",
+    "watch:test": "jest --watchAll"
   },
   "keywords": [
     "BuckleScript",
