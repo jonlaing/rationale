@@ -22,9 +22,9 @@ let keys: t('a) => list(string);
 
 let merge: (t('a), t('a)) => t('a);
 
-let mergeWith: (('a, 'a) => 'a, t('a), t('a)) => t('a);
+let mergeWith: (('a, 'a) => 'b, t('a), t('a)) => t('b);
 
-let mergeWithKey: ((string, 'a, 'a) => 'a, t('a), t('a)) => t('a);
+let mergeWithKey: ((string, 'a, 'a) => 'b, t('a), t('a)) => t('b);
 
 let omit: (list(string), t('a)) => t('a);
 

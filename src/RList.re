@@ -20,6 +20,8 @@ let init = (xs) => Option.(xs |> List.rev |> tail <$> List.rev);
 
 let last = (xs) => xs |> List.rev |> head;
 
+let any = (pred, xs) => List.fold_left((acc, v) => acc ? acc : pred(v), false, xs);
+
 let append = (a, xs) => List.append(xs, [a]);
 
 let concat = (xs, ys) => List.append(ys, xs);
@@ -56,25 +58,23 @@ let rec drop = (i, xs) =>
 
 let dropLast = (i, xs) => take(List.length(xs) - i, xs);
 
-let dropLastWhile = {
-  let rec loop = (pred, xs, acc) =>
-    switch xs {
-    | [] => acc
-    | [a] => pred(a) ? append(a, acc) : acc
-    | [a, ...b] => pred(a) ? loop(pred, b, append(a, acc)) : acc
-    };
-  (pred, xs) => loop(pred, xs, [])
-};
+let rec dropWhile = (pred, xs) =>
+  switch xs {
+  | [] => []
+  | [a, ...b] => pred(a) ? dropWhile(pred, b) : xs
+  };
+
+let dropLastWhile = (pred, xs) => List.rev(xs) |> dropWhile(pred) |> List.rev;
 
 let dropRepeatsWith = {
   let rec loop = (pred, xs, acc) =>
     switch xs {
     | [] => acc
-    | [a, ..._] when List.length(acc) == 0 => loop(pred, xs, append(a, acc))
-    | [a, ..._] =>
+    | [a, ...b] when List.length(acc) == 0 => loop(pred, b, append(a, acc))
+    | [a, ...b] =>
       Option.(
         last(acc) <$> pred(a) |> default(false) ?
-          loop(pred, xs, append(a, acc)) : loop(pred, xs, acc)
+          loop(pred, b, acc) : loop(pred, b, append(a, acc))
       )
     };
   (pred, xs) => loop(pred, xs, [])
@@ -82,18 +82,13 @@ let dropRepeatsWith = {
 
 let dropRepeats = (xs) => dropRepeatsWith((x, y) => x == y, xs);
 
-let rec dropWhile = (pred, xs) =>
-  switch xs {
-  | [] => []
-  | [a, ...b] => pred(a) ? dropWhile(pred, b) : b
-  };
-
-let splitAt = (i, xs) => (take(i, xs), takeLast(i - 1, xs));
+let splitAt = (i, xs) => (take(i, xs), takeLast(List.length(xs) - i, xs));
 
 let adjust = (f, i, xs) => {
-  let (a, b) = splitAt(i, xs);
+  let (a, b) = splitAt(i + 1, xs);
   switch a {
   | _ when i < 0 => xs
+  | _ when i >= List.length(xs) => xs
   | [] => b
   | [a] => [f(a), ...b]
   | a =>
@@ -104,19 +99,18 @@ let adjust = (f, i, xs) => {
 };
 
 let aperature = {
-  let rec loop = (i, xs, n, acc) =>
-    if (n == i) {
-      acc
-    } else {
-      let (_, b) = splitAt(n, xs);
-      loop(i, xs, n + 1, append(take(n, b), acc))
+  let rec loop = (i, xs, acc) =>
+    switch xs {
+    | [] => acc
+    | a when List.length(a) < i => acc
+    | [_, ...b] => loop(i, b, append(take(i, xs), acc))
     };
-  (i, xs) => loop(i, xs, 0, [])
+  (i, xs) => loop(i, xs, [])
 };
 
-let containsWith = (f, x) => List.exists((y) => f(x, y));
+let containsWith = (f) => List.exists(f);
 
-let contains = (x) => containsWith(Util.eq, x);
+let contains = (x) => containsWith(Util.eq(x));
 
 let endsWith = (a, xs) => Option.(last(xs) <$> Util.eq(a) |> default(false));
 
@@ -140,16 +134,23 @@ let findLast = (pred, xs) => xs |> List.rev |> find(pred);
 let findLastIndex = (pred, xs) =>
   switch (findIndex(pred, List.rev(xs))) {
   | None => None
-  | Some(a) => Some(List.length(xs) - a)
+  | Some(a) => Some(List.length(xs) - a - 1)
   };
 
 let groupWith = {
-  let rec loop = (pred, xs, acc) =>
-    switch xs {
-    | [] => acc
-    | _ => loop(pred, dropWhile(pred, xs), append(takeWhile(pred, xs), acc))
-    };
-  (pred, xs) => loop(pred, xs, [[]])
+  let rec loop = (pred: ('a, 'a) => bool, n, xs, acc) =>
+    Option.Infix.(
+      switch xs {
+      | [] => List.length(acc) == 0 ? [[]] : acc
+      | [a] => append([a], acc)
+      | _ when n > List.length(xs) => append(xs, acc)
+      | _ =>
+        let (x0, x1) = splitAt(n + 1, xs);
+        Some(pred) <*> last(x0) <*> head(x1) |> Option.default(true) ?
+          loop(pred, n + 1, xs, acc) : loop(pred, 0, x1, append(x0, acc))
+      }
+    );
+  (pred, xs) => loop(pred, 0, xs, [])
 };
 
 let indexOf = (a, xs) => findIndex((x) => a == x, xs);
@@ -164,14 +165,15 @@ let insertAll = (i, xs, ys) => {
   a |> concat(xs) |> concat(b)
 };
 
-let intersperse = (a, xs) => List.fold_left((acc, v) => concat([a, v], acc), [List.hd(xs)], xs);
+let intersperse = (a, xs) =>
+  List.fold_left((acc, v) => List.length(acc) > 0 ? acc |> append(a) |> append(v) : [v], [], xs);
 
 let join = (j) => List.fold_left((acc, v) => String.length(acc) == 0 ? v : acc ++ j ++ v, "");
 
 let lastIndexOf = (a, xs) =>
   switch (indexOf(a, List.rev(xs))) {
   | None => None
-  | Some(a) => Some(List.length(xs) - a)
+  | Some(a) => Some(List.length(xs) - a - 1)
   };
 
 let none = (pred, xs) => ! List.exists(pred, xs);
@@ -180,17 +182,10 @@ let partition = (pred, xs) => (List.filter(pred, xs), List.filter((x) => ! pred(
 
 let range = {
   let rec loop = (inc, s, e, acc) =>
-    Option.(
-      switch acc {
-      | [] => [s]
-      | acc when inc(last(acc) |> default(e)) > e => acc
-      | _ =>
-        switch (last(acc)) {
-        | None => acc
-        | Some(a) => loop(inc, s, e, append(inc(a), acc))
-        }
-      }
-    );
+    switch (List.rev(acc)) {
+    | [] => loop(inc, s, e, [s])
+    | [a, ..._] => inc(a) > e ? acc : loop(inc, s, e, append(inc(a), acc))
+    };
   (inc, s, e) => loop(inc, s, e, [])
 };
 
@@ -203,7 +198,7 @@ let reduceWhile = (pred, f, x, xs) =>
     (acc, v) =>
       switch acc {
       | (false, _) => acc
-      | (_, a) => pred(v) ? (true, f(a, v)) : (false, a)
+      | (_, a) => pred(a, v) ? (true, f(a, v)) : (false, a)
       },
     (true, x),
     xs
@@ -260,7 +255,7 @@ let startsWith = (x, xs) =>
 let times = {
   let rec loop = (f, n, i, acc) =>
     if (i < n) {
-      loop(f, n, i + 1, concat(f(i), acc))
+      loop(f, n, i + 1, append(f(i), acc))
     } else {
       acc
     };
@@ -269,10 +264,12 @@ let times = {
 
 let uniqWithBy = (eq, f, xs) =>
   List.fold_left(
-    (acc, v) => Option.(last(acc) <$> f <$> eq(f(v)) |> default(false) ? acc : append(v, acc)),
-    [],
+    ((acc, tacc), v) =>
+      containsWith(eq(f(v)), tacc) ? (acc, tacc) : (append(v, acc), append(f(v), tacc)),
+    ([], []),
     xs
-  );
+  )
+  |> fst;
 
 let uniqBy = (f, xs) => uniqWithBy(Util.eq, f, xs);
 
@@ -286,7 +283,7 @@ let union = (xs, ys) => concat(ys, xs) |> uniq;
 
 let update = (x, i, xs) => adjust(Function.always(x), i, xs);
 
-let without = (exclude, xs) => List.filter((x) => contains(x, exclude), xs);
+let without = (exclude, xs) => reject((x) => contains(x, exclude), xs);
 
 let zipWith = {
   let rec loop = (f, xs, ys, acc) =>
@@ -301,9 +298,9 @@ let differenceWith = {
   let rec loop = (f, xs, ys, acc) =>
     switch xs {
     | [] => acc
-    | [a, ...b] => containsWith(f, a, ys) ? loop(f, b, ys, acc) : loop(f, b, ys, append(a, acc))
+    | [a, ...b] => containsWith(f(a), ys) ? loop(f, b, ys, acc) : loop(f, b, ys, append(a, acc))
     };
-  (f, xs, ys) => loop(f, xs, ys, [])
+  (f, xs, ys) => loop(f, xs, ys, []) @ loop(f, ys, xs, [])
 };
 
 let difference = (xs, ys) => differenceWith(Util.eq, xs, ys);
