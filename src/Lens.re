@@ -6,8 +6,6 @@ type t('a, 'b) = {
 
 let make = (getter, setter) => {get: getter, set: setter};
 
-let (||>) = (f, g, x) => g(f(x));
-
 let view = (l, a) => l.get(a);
 
 let set = (l, v, a) => l.set(v, a);
@@ -17,7 +15,7 @@ let over = (l, f, a) => {
   l.set(f(v), a)
 };
 
-let compose = (l0, l1) => {get: l1.get ||> l0.get, set: l0.set ||> over(l1)};
+let compose = (l0, l1) => Function.{get: l1.get ||> l0.get, set: l0.set ||> over(l1)};
 
 let (-<<) = compose;
 
@@ -39,7 +37,7 @@ let head = {
   set: (v, xs) =>
     switch v {
     | None => xs
-    | Some(a) => RList.tail(xs) |> Option.default([]) |> RList.append(a)
+    | Some(a) => RList.tail(xs) |> Option.default([]) |> ((tl) => [a, ...tl])
     }
 };
 
@@ -48,7 +46,7 @@ let tail = {
   set: (v, xs) =>
     switch v {
     | None => xs
-    | Some(a) => Option.(RList.head(xs) |> fmap((xs) => RList.append(xs, a)) |> default(a))
+    | Some(a) => Option.(RList.head(xs) <$> ((hd) => [hd, ...a]) |> default(a))
     }
 };
 
