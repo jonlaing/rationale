@@ -10,9 +10,7 @@ let default: ('a, option('a)) => 'a;
 
 let ofResult: Js.Result.t('a, 'b) => option('a);
 
-let ofExn: 'a => option('a);
-
-let toExn: option('a) => 'a;
+let toExn: (string, option('a)) => 'a;
 
 let firstSome: (option('a), option('a)) => option('a);
 

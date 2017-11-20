@@ -1,8 +1,20 @@
-let head = (xs) => Option.ofExn(List.hd(xs));
+let head = (xs) =>
+  switch (List.hd(xs)) {
+  | exception _ => None
+  | a => Some(a)
+  };
 
-let tail = (xs) => Option.ofExn(List.tl(xs));
+let tail = (xs) =>
+  switch (List.tl(xs)) {
+  | exception _ => None
+  | a => Some(a)
+  };
 
-let nth = (i, xs) => Option.ofExn(List.nth(xs, i));
+let nth = (i, xs) =>
+  switch (List.nth(xs, i)) {
+  | exception _ => None
+  | a => Some(a)
+  };
 
 let init = (xs) => Option.(xs |> List.rev |> tail <$> List.rev);
 
@@ -108,7 +120,11 @@ let contains = (x) => containsWith(Util.eq, x);
 
 let endsWith = (a, xs) => Option.(last(xs) <$> Util.eq(a) |> default(false));
 
-let find = (pred, xs) => Option.ofExn(List.find(pred, xs));
+let find = (pred, xs) =>
+  switch (List.find(pred, xs)) {
+  | exception _ => None
+  | a => Some(a)
+  };
 
 let findIndex = {
   let rec loop = (pred, xs, i) =>
