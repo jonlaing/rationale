@@ -37,7 +37,7 @@ let has = (k, d) => get(k, d) <$> Function.true_ |> Option.default(false);
 
 let invert = (d) =>
   List.fold_left(
-    (acc, (k, v)) => set(k, get(k, acc) <$> RList.append(v) |> Option.default([v]), acc),
+    (acc, (k, v)) => set(v, get(v, acc) <$> RList.append(k) |> Option.default([k]), acc),
     [],
     d
   );
