@@ -14,6 +14,8 @@ let init: list('a) => option(list('a));
 /** Get the last element of a list */
 let last: list('a) => option('a);
 
+let any: ('a => bool, list('a)) => bool;
+
 /** Append a value to the end of a list */
 let append: ('a, list('a)) => list('a);
 
@@ -53,7 +55,7 @@ let adjust: ('a => 'a, int, list('a)) => list('a);
 
 let aperature: (int, list('a)) => list(list('a));
 
-let containsWith: (('a, 'b) => bool, 'a, list('b)) => bool;
+let containsWith: ('a => bool, list('a)) => bool;
 
 let contains: ('a, list('a)) => bool;
 
@@ -67,7 +69,7 @@ let findLast: ('a => bool, list('a)) => option('a);
 
 let findLastIndex: ('a => bool, list('a)) => option(int);
 
-let groupWith: ('a => bool, list('a)) => list(list('a));
+let groupWith: (('a, 'a) => bool, list('a)) => list(list('a));
 
 let indexOf: ('a, list('a)) => option(int);
 
@@ -91,7 +93,7 @@ let rangeInt: (int, int, int) => list(int);
 
 let rangeFloat: (float, float, float) => list(float);
 
-let reduceWhile: ('a => bool, ('b, 'a) => 'b, 'b, list('a)) => 'b;
+let reduceWhile: (('a, 'b) => bool, ('a, 'b) => 'a, 'a, list('b)) => 'a;
 
 let reject: ('a => bool, list('a)) => list('a);
 
@@ -109,7 +111,7 @@ let splitWhen: ('a => bool, list('a)) => (list('a), list('a));
 
 let startsWith: ('a, list('a)) => bool;
 
-let times: (int => list('a), int) => list('a);
+let times: (int => 'a, int) => list('a);
 
 let uniqWithBy: (('a, 'a) => bool, 'b => 'a, list('b)) => list('b);
 
@@ -129,7 +131,7 @@ let without: (list('a), list('a)) => list('a);
 
 let zipWith: (('a, 'b) => 'c, list('a), list('b)) => list('c);
 
-let differenceWith: (('a, 'b) => bool, list('a), list('b)) => list('a);
+let differenceWith: (('a, 'a) => bool, list('a), list('a)) => list('a);
 
 let difference: (list('a), list('a)) => list('a);
 
