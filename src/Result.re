@@ -32,12 +32,6 @@ let ofOption = (err, r) =>
   | None => Error(err)
   };
 
-let ofExn = (e) =>
-  switch e {
-  | exception ex => Error(ex)
-  | a => Ok(a)
-  };
-
 let ap = (r, a) =>
   switch r {
   | Ok(f) => Ok(f(a))
