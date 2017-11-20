@@ -22,5 +22,8 @@
   "license": "MIT",
   "devDependencies": {
     "bs-platform": "2.0.0"
+  },
+  "dependencies": {
+    "bs-jest": "^0.2.0"
   }
 }
