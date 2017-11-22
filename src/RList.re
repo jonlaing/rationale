@@ -324,4 +324,33 @@ let zip = {
   (xs, ys) => loop(xs, ys, [])
 };
 
+let fold_lefti = {
+  let rec loop = (i, f, acc, xs) =>
+    switch xs {
+    | [] => acc
+    | [a, ...b] => loop(i + 1, f, f(acc, i, a), b)
+    };
+  (f, init, xs) => loop(0, f, init, xs)
+};
+
+let fold_righti = {
+  let xis = (xs) => fold_lefti((acc, i, a) => [(i, a), ...acc], [], xs);
+  (f, init, xs) => List.fold_left((acc, (i, a)) => f(acc, i, a), init, xis(xs))
+};
+
+let filteri = {
+  let rec loop = (pred, xs, i, acc) =>
+    switch xs {
+    | [] => acc
+    | [a, ...b] => pred(i, a) ? loop(pred, b, i + 1, append(a, acc)) : loop(pred, b, i + 1, acc)
+    };
+  (pred, xs) => loop(pred, xs, 0, [])
+};
+
+let filter_map = (pred, f, xs) =>
+  List.fold_left((acc, x) => pred(x) ? append(f(x), acc) : acc, [], xs);
+
+let filter_mapi = (pred, f, xs) =>
+  fold_lefti((acc, i, a) => pred(i, a) ? append(f(i, a), acc) : acc, [], xs);
+
 let pure = (a) => [a];

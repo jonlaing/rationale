@@ -140,3 +140,13 @@ let intersection: (list('a), list('a)) => list('a);
 let zip: (list('a), list('b)) => list(('a, 'b));
 
 let pure: 'a => list('a);
+
+let fold_lefti: (('b, int, 'a) => 'b, 'b, list('a)) => 'b;
+
+let fold_righti: (('b, int, 'a) => 'b, 'b, list('a)) => 'b;
+
+let filteri: ((int, 'a) => bool, list('a)) => list('a);
+
+let filter_map: ('a => bool, 'a => 'b, list('a)) => list('b);
+
+let filter_mapi: ((int, 'a) => bool, (int, 'a) => 'b, list('a)) => list('b);
