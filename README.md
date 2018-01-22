@@ -5,6 +5,11 @@ Rationale is inspired by [RamdaJS](http://ramdajs.com/). It is a collection of h
 
 Note that not all of Ramda was ported over, as many of Ramda's utilities are making up for deficits in Javascript, which Reason doesn't have. Furthermore, many of the functions that operate on objects, simply don't make sense in Reason.
 
+Installation
+--------------------------------------------------------------------------------
+
+Run `npm install --save rationale` and add `rationale` to `bs-dependencies` in `bsconfig.json`. 
+
 Features
 --------------------------------------------------------------------------------
 
