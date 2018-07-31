@@ -34,7 +34,7 @@ test(
 test(
   "ofResult",
   () =>
-    expect((ofResult(Js.Result.Ok(true)), ofResult(Js.Result.Error(false))))
+    expect((ofResult(Belt.Result.Ok(true)), ofResult(Belt.Result.Error(false))))
     |> toEqual((Some(true), None))
 );
 

@@ -24,9 +24,9 @@ In the OCaml/ReasonML standard library, many of the common List operations throw
 - nth
 - etc
 
-### Monadic Options and Js.Results
+### Monadic Options and Belt.Results
 
-Rationale includes monadic and functor operations ala Haskell for the `option` and `Js.Result` types.
+Rationale includes monadic and functor operations ala Haskell for the `option` and `Belt.Result` types.
 
 ```Reason
 open Rationale.Option.Infix;

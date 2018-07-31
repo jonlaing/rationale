@@ -1,4 +1,4 @@
-open Js.Result;
+open Belt.Result;
 
 let fail = (err) => Error(err);
 
@@ -53,7 +53,7 @@ let bimap = (okF, errF, r) =>
 include
   Monad.MakeBasic2(
     {
-      type t('a, 'd) = Js.Result.t('a, 'd);
+      type t('a, 'd) = Belt.Result.t('a, 'd);
       let bind = (r, f) =>
         switch r {
         | Ok(a) => f(a)

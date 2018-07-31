@@ -8,7 +8,7 @@ let isSome: option('a) => bool;
 
 let default: ('a, option('a)) => 'a;
 
-let ofResult: Js.Result.t('a, 'b) => option('a);
+let ofResult: Belt.Result.t('a, 'b) => option('a);
 
 let toExn: (string, option('a)) => 'a;
 

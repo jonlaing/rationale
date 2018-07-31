@@ -21,7 +21,7 @@ let default = (d, o) =>
   };
 
 let ofResult = (r) =>
-  Js.Result.(
+  Belt.Result.(
     switch r {
     | Ok(a) => Some(a)
     | Error(_) => None
