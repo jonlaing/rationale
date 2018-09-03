@@ -78,3 +78,7 @@ let whereEq = (d0, d1) => map(Util.eq, d0) |> Function.flip(where, d1);
 let filter = (f) => List.filter(((_, v)) => f(v))
 
 let filteri = (f) => List.filter(((k, v)) => f(k, v))
+
+let fold_left = (f) => List.fold_left((acc, (k, v)) => f(acc, k, v))
+
+let fold_right = (f) => List.fold_right(((k, v), acc) => f(k, v, acc))

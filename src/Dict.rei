@@ -43,3 +43,7 @@ let whereEq: (t('a), t('a)) => bool;
 let filter: ('a => bool, t('a)) => t('a);
 
 let filteri: ((string, 'a) => bool, t('a)) => t('a);
+
+let fold_left: (('a, string, 'b) => 'a, 'a, t('b)) => 'a
+
+let fold_right: ((string, 'a, 'b) => 'b, t('a), 'b ) => 'b
