@@ -39,3 +39,7 @@ let values: t('a) => list('a);
 let where: (t(('a => bool)), t('a)) => bool;
 
 let whereEq: (t('a), t('a)) => bool;
+
+let filter: ('a => bool, t('a)) => t('a);
+
+let filteri: ((string, 'a) => bool, t('a)) => t('a);

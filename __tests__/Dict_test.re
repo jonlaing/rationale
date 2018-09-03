@@ -91,3 +91,7 @@ test(
     expect((whereEq(w0, dict), whereEq(w1, dict))) |> toEqual((true, false))
   }
 );
+
+test("filter", () => expect(filter((v) => v > 1, dict)) |> toEqual([("b", 2), ("c", 3)]));
+
+test("filteri", () => expect(filteri((k, _) => k == "a", dict)) |> toEqual([("a", 1)]));

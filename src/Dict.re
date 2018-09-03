@@ -21,7 +21,7 @@ let eqProps = (k, d0: t('a), d1: t('a)) =>
 
 let map = (f) => List.map(((k, v)) => (k, f(v)));
 
-let mapi = (f, d) => List.map(((k, v)) => (k, f(k, v)), d);
+let mapi = (f) => List.map(((k, v)) => (k, f(k, v)));
 
 let evolve = (e, d) =>
   mapi(
@@ -74,3 +74,7 @@ let where = (predD, d) =>
   );
 
 let whereEq = (d0, d1) => map(Util.eq, d0) |> Function.flip(where, d1);
+
+let filter = (f) => List.filter(((_, v)) => f(v))
+
+let filteri = (f) => List.filter(((k, v)) => f(k, v))
