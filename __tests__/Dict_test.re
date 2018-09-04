@@ -91,3 +91,17 @@ test(
     expect((whereEq(w0, dict), whereEq(w1, dict))) |> toEqual((true, false))
   }
 );
+
+test("filter", () => expect(filter((v) => v > 1, dict)) |> toEqual([("b", 2), ("c", 3)]));
+
+test("filteri", () => expect(filteri((k, _) => k == "a", dict)) |> toEqual([("a", 1)]));
+
+test("fold_left", () => expect(
+    fold_left((acc, _, v) => acc + v, 0, dict)
+  ) |> toEqual(6)
+);
+
+test("fold_right", () => expect(
+    fold_right((_, v, acc) => acc +   (v > 1 ? v : 0), dict, 0)
+  ) |> toEqual(5)
+);
