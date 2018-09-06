@@ -47,3 +47,5 @@ let filteri: ((string, 'a) => bool, t('a)) => t('a);
 let fold_left: (('a, string, 'b) => 'a, 'a, t('b)) => 'a
 
 let fold_right: ((string, 'a, 'b) => 'b, t('a), 'b ) => 'b
+
+let unzip: t('a) => (list(string), list('a))
