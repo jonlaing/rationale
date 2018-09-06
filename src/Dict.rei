@@ -12,7 +12,7 @@ let map: ('a => 'b, t('a)) => t('b);
 
 let mapi: ((string, 'a) => 'b, t('a)) => t('b);
 
-let evolve: (t(('a => 'a)), t('a)) => t('a);
+let evolve: (t('a => 'a), t('a)) => t('a);
 
 let has: (string, t('a)) => bool;
 
@@ -36,7 +36,7 @@ let project: (list(string), list(t('a))) => list(t('a));
 
 let values: t('a) => list('a);
 
-let where: (t(('a => bool)), t('a)) => bool;
+let where: (t('a => bool), t('a)) => bool;
 
 let whereEq: (t('a), t('a)) => bool;
 
@@ -44,6 +44,6 @@ let filter: ('a => bool, t('a)) => t('a);
 
 let filteri: ((string, 'a) => bool, t('a)) => t('a);
 
-let fold_left: (('a, string, 'b) => 'a, 'a, t('b)) => 'a
+let fold_left: (('a, string, 'b) => 'a, 'a, t('b)) => 'a;
 
-let fold_right: ((string, 'a, 'b) => 'b, t('a), 'b ) => 'b
+let fold_right: ((string, 'a, 'b) => 'b, t('a), 'b) => 'b;
