@@ -1,6 +1,6 @@
 {
   "name": "rationale",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Rationale is a collection of helper utility functions that are absent in the OCaml/ReasonML standard library.",
   "repository": {
     "type": "git",
