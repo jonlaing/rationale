@@ -82,3 +82,12 @@ let filteri = (f) => List.filter(((k, v)) => f(k, v))
 let fold_left = (f) => List.fold_left((acc, (k, v)) => f(acc, k, v))
 
 let fold_right = (f) => List.fold_right(((k, v), acc) => f(k, v, acc))
+
+let unzip = d => {
+  let rec loop = (list, xs, ys) =>
+    switch (list) {
+    | [] => (List.rev(xs), List.rev(ys))
+    | [(x, y), ...rest] => loop(rest, [x, ...xs], [y, ...ys])
+    };
+  loop(d, [], []);
+};

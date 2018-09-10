@@ -105,3 +105,7 @@ test("fold_right", () => expect(
     fold_right((_, v, acc) => acc +   (v > 1 ? v : 0), dict, 0)
   ) |> toEqual(5)
 );
+
+test("unzip", () => expect(unzip(dict)) |> toEqual((["a", "b", "c"], [1, 2, 3])))
+
+test("unzip", () => expect(unzip([])) |> toEqual(([], [])))
