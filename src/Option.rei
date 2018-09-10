@@ -28,13 +28,13 @@ let fmap: ('a => 'b, option('a)) => option('b);
 
 let (<$>): (option('a), 'a => 'b) => option('b);
 
-let apply: (option(('a => 'b)), option('a)) => option('b);
+let apply: (option('a => 'b), option('a)) => option('b);
 
 let pure: 'a => option('a);
 
 module Infix: {
   let (>>=): (option('a), 'a => option('b)) => option('b);
   let (<$>): (option('a), 'a => 'b) => option('b);
-  let (<*>): (option(('a => 'b)), option('a)) => option('b);
+  let (<*>): (option('a => 'b), option('a)) => option('b);
   let (|?): (option('a), option('a)) => option('a);
 };
