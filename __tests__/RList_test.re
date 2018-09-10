@@ -128,12 +128,12 @@ describe("adjust", () => {
   );
 });
 
-describe("aperature", () => {
+describe("aperture", () => {
   test("zero", () =>
-    expect(aperature(0, [1, 2, 3, 4, 5])) |> toEqual([[], [], [], [], []])
+    expect(aperture(0, [1, 2, 3, 4, 5])) |> toEqual([[], [], [], [], []])
   );
   test("less than length", () =>
-    expect(aperature(2, [1, 2, 3, 4, 5]))
+    expect(aperture(2, [1, 2, 3, 4, 5]))
     |> toEqual([[1, 2], [2, 3], [3, 4], [4, 5]])
   );
   test("greater than length", () =>
