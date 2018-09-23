@@ -40,6 +40,11 @@ let firstSome = (a, b) =>
   | _ => a
   };
 
+let tryWith = f =>
+  try (Some(f())) {
+  | _ => None
+  };
+
 include Monad.MakeBasic({
   type t('a) = option('a);
   let bind = (o, f) =>
