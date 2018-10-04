@@ -87,3 +87,7 @@ describe(
     )
   }
 );
+
+test("tryWith", () => expect((tryWith(() => raise(Not_found)), tryWith(() => 3)))
+  |> toEqual((None, Some(3)))
+)

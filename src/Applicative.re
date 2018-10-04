@@ -1,6 +1,6 @@
 module type Basic = {
   type t('a);
-  let apply: (t(('a => 'b)), t('a)) => t('b);
+  let apply: (t('a => 'b), t('a)) => t('b);
   let pure: 'a => t('a);
 };
 
