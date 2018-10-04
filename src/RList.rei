@@ -53,7 +53,7 @@ let splitAt: (int, list('a)) => (list('a), list('a));
 
 let adjust: ('a => 'a, int, list('a)) => list('a);
 
-let aperature: (int, list('a)) => list(list('a));
+let aperture: (int, list('a)) => list(list('a));
 
 let containsWith: ('a => bool, list('a)) => bool;
 
