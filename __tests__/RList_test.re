@@ -321,3 +321,27 @@ test("zip", () =>
   expect(zip([1, 2, 3], [4, 5, 6]))
   |> toEqual([(1, 4), (2, 5), (3, 6)])
 );
+
+test("create", () =>
+  expect((create(x => x, -1), create(x => x * 2, 4)))
+  |> toEqual(([], [0, 2, 4, 6]))
+);
+
+test("filter_opt", () =>
+  expect((
+    filter_opt([]),
+    filter_opt([Some(3), None, Some(4), None, Some(5)]),
+  ))
+  |> toEqual(([], [3, 4, 5]))
+);
+
+test("reduce", () =>
+  expect((reduce((+), []), reduce((+), [1, 2, 3])))
+  |> toEqual((None, Some(6)))
+);
+
+test("merge", () => {
+  let compare = (a, b) => a - b;
+  expect((merge(compare, [], []), merge(compare, [1, 3, 5], [2, 4])))
+  |> toEqual(([], [1, 2, 3, 4, 5]));
+});

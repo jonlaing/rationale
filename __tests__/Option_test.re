@@ -77,4 +77,8 @@ describe("Functor", () => {
     let g = x => x + 3;
     expect(Some(0) <$> (f <|| g)) |> toEqual(Some(0) <$> g <$> f);
   });
+  test("tryWith", () =>
+    expect((tryWith(() => raise(Not_found)), tryWith(() => 3)))
+    |> toEqual((None, Some(3)))
+  );
 });

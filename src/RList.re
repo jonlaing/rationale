@@ -387,4 +387,45 @@ let filter_mapi = (pred, f, xs) =>
     xs,
   );
 
-let pure = a => [a];
+let pure = (a) => [a];
+
+let create = (f, n) =>
+  if (n < 0) {
+    [];
+  } else {
+    let rec loop = (n, acc) =>
+      n == 0 ? acc : loop(n - 1, [f(n - 1), ...acc]);
+    loop(n, []);
+  };
+
+let filter_opt = xs => {
+  let rec loop = (l, acc) =>
+    switch (l) {
+    | [] => acc
+    | [hd, ...tl] =>
+      switch (hd) {
+      | None => loop(tl, acc)
+      | Some(x) => loop(tl, [x, ...acc])
+      }
+    };
+  List.rev(loop(xs, []));
+};
+
+let reduce = (f, xs) =>
+  switch (xs) {
+  | [] => None
+  | [hd, ...tl] => Some(List.fold_left(f, hd, tl))
+  };
+
+let merge = (compare, xs, ys) => {
+  let rec loop = (acc, xs, ys) =>
+    switch (xs, ys) {
+    | ([], ys) => List.rev_append(acc, ys)
+    | (xs, []) => List.rev_append(acc, xs)
+    | ([h1, ...t1], [h2, ...t2]) =>
+      compare(h1, h2) <= 0 ?
+        loop([h1, ...acc], t1, ys) : loop([h2, ...acc], xs, t2)
+    };
+  loop([], xs, ys);
+};
+

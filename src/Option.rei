@@ -14,6 +14,8 @@ let toExn: (string, option('a)) => 'a;
 
 let firstSome: (option('a), option('a)) => option('a);
 
+let tryWith: (unit => 'a) => option('a);
+
 include Monad.Basic with type t('a) := option('a);
 
 include Applicative.Basic with type t('a) := option('a);

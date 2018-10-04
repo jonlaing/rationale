@@ -150,3 +150,11 @@ let filteri: ((int, 'a) => bool, list('a)) => list('a);
 let filter_map: ('a => bool, 'a => 'b, list('a)) => list('b);
 
 let filter_mapi: ((int, 'a) => bool, (int, 'a) => 'b, list('a)) => list('b);
+
+let create: (int => 'a, int) => list('a);
+
+let filter_opt: list(option('a)) => list('a);
+
+let reduce: (('a, 'a) => 'a, list('a)) => option('a);
+
+let merge: (('a, 'a) => int, list('a), list('a)) => list('a);
