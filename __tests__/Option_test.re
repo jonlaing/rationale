@@ -66,11 +66,6 @@ describe("Monad", () => {
   });
 });
 
-test("tryWith", () =>
-  expect((tryWith(() => raise(Not_found)), tryWith(() => 3)))
-  |> toEqual((None, Some(3)))
-);
-
 test("map", () =>
   expect((map(x => x + 1, Some(1)), map(x => x + 1, None)))
   |> toEqual((Some(2), None))
@@ -138,6 +133,7 @@ test("toList", () =>
 test("ofList", () =>
   expect((ofList([]), ofList([1, 2, 3]))) |> toEqual((None, Some(1)))
 );
+
 describe("Functor", () => {
   test("identity", () =>
     expect(Some(0) <$> Function.identity)
