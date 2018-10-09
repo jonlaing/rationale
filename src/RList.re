@@ -104,7 +104,7 @@ let adjust = (f, i, xs) => {
   };
 };
 
-let aperature = {
+let aperture = {
   let rec loop = (i, xs, acc) =>
     switch (xs) {
     | [] => acc
