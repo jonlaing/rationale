@@ -2,7 +2,7 @@ open Jest;
 
 open Expect;
 
-open Option;
+open! Option;
 
 test("some", () =>
   switch (some(1)) {
