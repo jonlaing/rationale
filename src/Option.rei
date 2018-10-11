@@ -40,3 +40,25 @@ module Infix: {
   let (<*>): (option('a => 'b), option('a)) => option('b);
   let (|?): (option('a), option('a)) => option('a);
 };
+
+let map: ('a => 'b, option('a)) => option('b)
+
+let iter: ('a => unit, option('a)) => unit
+
+let fold: (('b, 'a) => 'b, 'b, option('a)) => 'b
+
+let filter: ('a => bool, option('a)) => option('a)
+
+let exists: ('a => bool, option('a)) => bool
+
+let flatten: option(option('a)) => option('a)
+
+let flatMap: ('a => option('b), option('a)) => option('b)
+
+let compare: (('a, 'b) => int, option('a), option('b)) => int
+
+let equal: (('a, 'b) => bool, option('a), option('b)) => bool
+
+let toList: option('a) => list('a)
+
+let ofList: list('a) => option('a)
