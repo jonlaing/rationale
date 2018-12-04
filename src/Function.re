@@ -18,3 +18,28 @@ module Infix = {
 };
 
 include Infix;
+
+let debounce = (~immediate=false, wait, f) => Js.Global.({
+  let timeout = ref(None);
+  let afterWait = f => timeout := setTimeout(f, wait)->Some;
+  () =>
+    switch (immediate, timeout^) {
+    | (true, None) =>
+      f();
+      afterWait(() => timeout := None);
+    | (true, Some(timerId)) =>
+      clearTimeout(timerId);
+      afterWait(() => timeout := None);
+    | (false, None) =>
+      afterWait(() => {
+        f();
+        timeout := None;
+      })
+    | (false, Some(timerId)) =>
+      clearTimeout(timerId);
+      afterWait(() => {
+        f();
+        timeout := None;
+      });
+    };
+});
