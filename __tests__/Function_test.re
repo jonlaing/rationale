@@ -4,49 +4,75 @@ open Function;
 
 describe("debounce", () => {
   describe("immediate is false", () => {
-    Jest.useFakeTimers();
     let num = ref(0);
-    let add = debounce(~immediate=false, 30, () => num := num^ + 1);
+    let add = debounce(~immediate=false, () => num := num^ + 1, 300);
     test("1: num is 0", () => {
       add();
       add();
       expect(num^) |> toEqual(0);
     });
-    test("2: num is 1", () => {
-      Jest.runTimersToTime(30);
-      expect(num^) |> toEqual(1);
-    });
-    test("3: num is 1", () => {
+    testAsync("2: num is 1", finish =>
+      delay(() => finish(expect(num^) |> toEqual(1)), 300) |> ignore
+    );
+    testAsync("3: num is 1", finish => {
       add();
-      Jest.runTimersToTime(10);
-      expect(num^) |> toEqual(1);
+      delay(() => finish(expect(num^) |> toEqual(1)), 100) |> ignore;
     });
-    test("4: num is 2", () => {
-      Jest.runTimersToTime(20);
-      expect(num^) |> toEqual(2);
-    });
+    testAsync("4: num is 2", finish =>
+      delay(() => finish(expect(num^) |> toEqual(2)), 200) |> ignore
+    );
   });
   describe("immediate is true", () => {
-    Jest.useFakeTimers();
     let num = ref(0);
-    let add = debounce(~immediate=true, 30, () => num := num^ + 1);
+    let add = debounce(~immediate=true, () => num := num^ + 1, 300);
     test("1: num is 1", () => {
       add();
       add();
       expect(num^) |> toEqual(1);
     });
-    test("2: num is 1", () => {
-      Jest.runTimersToTime(30);
-      expect(num^) |> toEqual(1);
-    });
-    test("3: num is 2", () => {
+    testAsync("2: num is 1", finish =>
+      delay(() => finish(expect(num^) |> toEqual(1)), 300) |> ignore
+    );
+    testAsync("3: num is 2", finish => {
       add();
-      Jest.runTimersToTime(10);
-      expect(num^) |> toEqual(2);
+      delay(() => finish(expect(num^) |> toEqual(2)), 100) |> ignore;
     });
-    test("4: num is 2", () => {
-      Jest.runTimersToTime(20);
-      expect(num^) |> toEqual(2);
+    testAsync("4: num is 2", (finish) => {
+      delay(() => finish(expect(num^) |> toEqual(2)), 200) |> ignore ;
     });
+  });
+});
+
+describe("throttle", () => {
+  let num = ref(0);
+  let add =
+    throttle(
+      () => {
+        num := num^ + 1;
+        num;
+      },
+      300,
+    );
+  test("1: num is 1", () => {
+    add();
+    add();
+    expect(num^) |> toEqual(1);
+  });
+  testAsync("2: num is 2", finish =>
+    delay(() => finish(expect(num^) |> toEqual(2)), 350) |> ignore
+  );
+
+  testAsync("3: num is 4", finish => {
+    delay(
+      () => {
+        add();
+        add();
+        add();
+        add();
+      },
+      350,
+    )
+    |> ignore;
+    delay(() => finish(expect(num^) |> toEqual(4)), 700) |> ignore;
   });
 });
