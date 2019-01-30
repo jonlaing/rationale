@@ -16,6 +16,8 @@ let last: list('a) => option('a);
 
 let any: ('a => bool, list('a)) => bool;
 
+let all: ('a => bool, list('a)) => bool;
+
 /** Append a value to the end of a list */
 let append: ('a, list('a)) => list('a);
 
