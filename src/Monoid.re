@@ -3,8 +3,6 @@ module type General = {
   let empty: t;
   let append: (t, t) => t;
   let concat: list(t) => t
-  
-
 };
 
 module MakeGeneral = (M: General) => {

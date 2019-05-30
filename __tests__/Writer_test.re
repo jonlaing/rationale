@@ -11,6 +11,41 @@ module WriterList = Writer.MakeWriter({
   let concat = xs => List.concat(xs);
 });
 
+describe("Applicative", () => {
+  open! Writer.WriterString;
+  open! Function;
+  test("composition", () => {
+    let f = Writer({ runWriter: (a => a + a, "") })
+    let g = Writer({ runWriter: (a => a * a, "") })
+    let v = Writer({ runWriter: (1, "") })
+     
+    expect(
+      pure (compose) <*> f <*> g <*> v
+    ) |> toEqual(
+      f <*> (g <*> v)
+    )
+  });
+  test("identity", () => {
+    let v = Writer({ runWriter: (1, "") })
+
+    expect(
+      pure (identity) <*> v
+    ) |> toEqual(
+      v
+    )
+  });
+  test("homomorphism", () => {
+    let f = a => a + a;
+    let x = 1;
+
+    expect(
+      pure (f) <*> pure (x)
+    ) |> toEqual(
+      pure (f(x))
+    )
+  });
+});
+
 describe("Monad", () => {
   test("left identity", () => {
     open! Writer.WriterString;

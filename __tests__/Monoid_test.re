@@ -39,5 +39,3 @@ describe("Monoid", () => {
     expect(M_String.concat(["a", "b", "c"])) |> toEqual("abc")
   );
 });
-
-

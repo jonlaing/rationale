@@ -3,10 +3,6 @@ type tx('a, 'w) = {
 }
 type writer('a, 'w) = Writer(tx('a, 'w));
 
-module type LogType = {
-  type t;
-}
-
 module MakeWriter = (M: Monoid.General) => {
   include (Monad.MakeBasic({
     type t('a) = writer('a, M.t);
