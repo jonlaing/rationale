@@ -66,7 +66,7 @@ describe("Monad", () => {
   test("associativity", () => {
     open! WriterList;
     let init = Writer({ runWriter: (10, [])});
-    let f = x => Writer({ runWriter: (x * 100, [1])});
+    let f = x => Writer({ runWriter: (x + 100, [1])});
     let g = x => Writer({ runWriter: (x * 200, [2])});
 
     expect(init >>= f >>= g) |> toEqual(init >>= (x => f(x) >>= g));
