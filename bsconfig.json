@@ -10,6 +10,10 @@
     {
       "dir": "__tests__",
       "type": "dev"
+    },
+    {
+      "dir": "examples",
+      "type": "dev"
     }
   ],
   "bs-dev-dependencies": [
