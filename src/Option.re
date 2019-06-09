@@ -56,7 +56,7 @@ include Monad.MakeBasic({
   let fmap = `DefineWithBind;
 });
 
-include Applicative.MakeBasic({
+include Alternative.MakeBasic({
   type t('a) = option('a);
   let apply = (o, a) =>
     switch (o) {
@@ -64,12 +64,19 @@ include Applicative.MakeBasic({
     | _ => None
     };
   let pure = some;
+  let alt = (this: t('a), other: t('a)) =>
+    switch (this) {
+    | Some(_) => this
+    | None => other
+    };
+  let empty = () => None;
 });
 
 module Infix = {
   let (>>=) = (>>=);
   let (<$>) = (<$>);
   let (<*>) = (<*>);
+  let (<|>) = alt;
   let (|?) = firstSome;
 };
 
