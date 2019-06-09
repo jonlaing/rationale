@@ -30,6 +30,12 @@ let fmap: ('a => 'b, option('a)) => option('b);
 
 let (<$>): (option('a), 'a => 'b) => option('b);
 
+let (<|>): (option('a), option('a)) => option('a);
+
+let empty: unit => option('a);
+
+let alt: (option('a), option('a)) => option('a);
+
 let apply: (option('a => 'b), option('a)) => option('b);
 
 let pure: 'a => option('a);
@@ -39,6 +45,7 @@ module Infix: {
   let (<$>): (option('a), 'a => 'b) => option('b);
   let (<*>): (option('a => 'b), option('a)) => option('b);
   let (|?): (option('a), option('a)) => option('a);
+  let (<|>): (option('a), option('a)) => option('a);
 };
 
 let map: ('a => 'b, option('a)) => option('b)
