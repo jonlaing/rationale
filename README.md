@@ -38,6 +38,80 @@ RList.init(a)
   |> Option.default(xs);
 ```
 
+### Additional ADT-s
+  #### Reader
+  #### Writer
+  #### IO, KIO
+  The main idea of the IO monad is to isolate our effects as much possible. Some languages like Haskell don't even
+  allow the user to manually start an effect, which is not the case for Reason, but with a little bit of self-discipline we can handle side effects in a monadic fashion as well.
+
+  KIO is a monadic structure with the type signature: ```io('a, 'env) = IO(Lazy.t('env => 'a))```
+  which makes it posible to store some effect with its config environment. ( dependency injection )
+
+  We can use `return` or `lift` methods to wrap our unsafe mutations.
+  The difference is that with `return` we throw away the environment, while with `lift` we are using it.
+
+  As you can see in our example we used `return` to wrap `Js.log`  
+  ```reason
+  let log = (x: string) =>
+    KIO.return({
+      Js.log(x)
+    });
+  ```
+
+  In the following `saveFile` example we use lift which makes it possible to use an injected `env` config
+  ( the injection happens when we call `KIO.runIO` )
+  ```reason
+  let saveFile = str => KIO.lift(env => {
+    Node.Fs.writeFileSync(env.target, str, `ascii);
+  });
+  ```
+
+  To run our effects we need to call: KIO.runIO(main, env);
+  Ideally in your program this method will be called once on the bottom of your index file.
+  Example:
+
+  ```reason
+    exception ReadError(string);
+    type envT = {
+      path: string,
+      dir: string,
+      target: string
+    };
+    let env = {path: "./input.txt", dir: "/", target: "./out.txt"};
+
+    let readFile = KIO.lift(env => {
+        try (Node.Fs.readFileSync(env.path, `ascii)) {
+        | ReadError(msg) => raise @@ ReadError("File read failed: " ++ msg)
+        };
+      });
+
+    let saveFile = str => KIO.lift(env => {
+      Node.Fs.writeFileSync(env.target, str, `ascii);
+    });
+
+    let log = (x: string) =>
+      KIO.return({
+        Js.log(x)
+      });
+
+    let parseFile = input => {
+      let l  = Js.String.split("\n", input);
+      Array.map(x => x ++ "100", l);
+    } 
+
+    let joinArray = (xs: array(string)) => Js.Array.join(xs)
+
+    let main = KIO.(
+      readFile 
+        <$> parseFile
+        <$> joinArray
+        >>= saveFile
+    )
+
+    KIO.runIO(main, env);
+  ```
+
 ### Support for Point-free style
 
 Rationale has `compose` and `pipe` functions, as well as supporting infix operators: `<||` and `||>` respectively.
@@ -153,6 +227,28 @@ open Option.Infix;
 
 let lastEqual = (xs, ys) =>
   Some(Util.eq) <*> RList.last(xs) <*> RList.last(ys) |> Option.default(false);
+```
+
+### Alternative
+
+With alternative you can implement simple but powerful fallback mechanism your ADT-s;
+
+Example:
+
+```Reason
+  open Option;
+  let someData = some("Hello");
+  let guard = fun
+  | true => pure() 
+  | _ => empty();
+
+
+  let startWith: (string, string) => option(unit) = (str, char) => guard(Js.String.startsWith(char, str))
+  let dataWithFallback =
+    someData 
+      >>= val_ => startWith(val_, "T")
+      >>= (_ => {Js.log(val_); some(Js.String.toUpperCase(val_))})
+      <|> some("Not started with T")
 ```
 
 ### Translating JS Idioms
