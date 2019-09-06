@@ -23,6 +23,9 @@ let last = xs => xs |> List.rev |> head;
 let any = (pred, xs) =>
   List.fold_left((acc, v) => acc ? acc : pred(v), false, xs);
 
+let all = (pred, xs) =>
+  List.fold_left((acc, v) => acc ? pred(v) : acc, true, xs);
+
 let append = (a, xs) => List.append(xs, [a]);
 
 let concat = (xs, ys) => List.append(ys, xs);
@@ -387,7 +390,7 @@ let filter_mapi = (pred, f, xs) =>
     xs,
   );
 
-let pure = (a) => [a];
+let pure = a => [a];
 
 let create = (f, n) =>
   if (n < 0) {
@@ -428,4 +431,3 @@ let merge = (compare, xs, ys) => {
     };
   loop([], xs, ys);
 };
-

@@ -24,6 +24,18 @@ test("last", () =>
   expect((last([1, 2]), init([]))) |> toEqual((Some(2), None))
 );
 
+test("any", () => {
+  let even = x => x mod 2 == 0;
+  expect((any(even, [1, 2, 3]), any(even, [1, 3, 5])))
+  |> toEqual((true, false));
+});
+
+test("all", () => {
+  let even = x => x mod 2 == 0;
+  expect((all(even, [2, 4, 6]), all(even, [2, 3, 4])))
+  |> toEqual((true, false));
+});
+
 test("append", () =>
   expect(append(1, [])) |> toEqual([1])
 );
