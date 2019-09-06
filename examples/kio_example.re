@@ -26,7 +26,7 @@ let parseFile = input => {
   Array.map(x => x ++ "100", l);
 } 
 
-let joinArray = (xs: array(string)) => Js.Array.join(xs)
+let joinArray = (xs: array(string)) => Js.Array.joinWith("", xs)
 
 let main = KIO.(
   readFile 
